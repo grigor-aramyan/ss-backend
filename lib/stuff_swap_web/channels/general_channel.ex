@@ -20,7 +20,8 @@ defmodule StuffSwapWeb.GeneralChannel do
         push socket, "signin", %{
           id: user.id,
           email: user.email,
-          name: user.name
+          name: user.name,
+          pic_uri: user.profile_image_uri
         }
         {:reply, :ok, assign(socket, :user_id, user.id)}
       true ->
@@ -40,7 +41,8 @@ defmodule StuffSwapWeb.GeneralChannel do
         push socket, "registeruser", %{
           id: user.id,
           email: user.email,
-          name: user.name
+          name: user.name,
+          pic_uri: user.profile_image_uri
         }
         {:reply, :ok, assign(socket, :user_id, user.id)}
       {:error, _changeset} ->
