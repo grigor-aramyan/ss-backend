@@ -6,6 +6,7 @@ defmodule StuffSwap.Subtypes.Subcategory do
 
   schema "subcategories" do
     field :title, :string
+    field :pic_uri, :string
     field :category_id, :id
 
     has_many :items, Item
@@ -16,7 +17,7 @@ defmodule StuffSwap.Subtypes.Subcategory do
   @doc false
   def changeset(%Subcategory{} = subcategory, attrs) do
     subcategory
-    |> cast(attrs, [:title])
-    |> validate_required([:title])
+    |> cast(attrs, [:title, :pic_uri, :category_id])
+    |> validate_required([:title, :category_id])
   end
 end
