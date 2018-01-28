@@ -17,7 +17,7 @@ alias StuffSwap.Subtypes.Subcategory
 cat1 = Repo.insert!(%Category{title: "Tutoring", pic_uri: "https://www.marcellintechnicalcollege.com.au/wp-content/uploads/2017/08/best_9b050071fdbac0b857d6_b4a511b78341445cc483ddfe795d8895.jpg"})
 Repo.insert!(%Subcategory{title: "Coding", category_id: cat1.id, pic_uri: "http://www.designlagoon.com/wp-content/uploads/2014/12/photodune-907221-css3-code-m.jpg"})
 Repo.insert!(%Subcategory{title: "Art", category_id: cat1.id, pic_uri: "https://images7.alphacoders.com/680/680980.jpg"})
-Repo.insert!(%Subcategory{title: "Foreign Languages", category_id: cat1.id, pic_uri: "https://yandex.ru/images/search?text=foreign%20languages&img_url=https%3A%2F%2Fsuffagah.com%2Fwp-content%2Fuploads%2F2015%2F12%2Fadem4.jpg&pos=3&rpt=simage"})
+Repo.insert!(%Subcategory{title: "Foreign Languages", category_id: cat1.id, pic_uri: "http://ndebted.com/wp-content/uploads/2016/07/learning-foreign-languages.jpg"})
 Repo.insert!(%Subcategory{title: "Misc", category_id: cat1.id, pic_uri: "http://www.discounthairtapes.com/images/categories/303.jpg"})
 
 cat2 = Repo.insert!(%Category{title: "Accessory", pic_uri: "http://orriv.com/wp-content/uploads/accessories-1024x1024.jpg"})
