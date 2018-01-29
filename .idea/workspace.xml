@@ -3,8 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="3bbc3b57-cacb-4f1b-8190-bbad2e2cbffa" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change beforePath="$PROJECT_DIR$/lib/stuff_swap_web/channels/general_channel.ex" afterPath="$PROJECT_DIR$/lib/stuff_swap_web/channels/general_channel.ex" />
-      <change beforePath="$PROJECT_DIR$/priv/repo/seeds.exs" afterPath="$PROJECT_DIR$/priv/repo/seeds.exs" />
+      <change beforePath="$PROJECT_DIR$/lib/stuff_swap_web/templates/page/index.html.eex" afterPath="$PROJECT_DIR$/lib/stuff_swap_web/templates/page/index.html.eex" />
     </list>
     <ignored path="$PROJECT_DIR$/assets/_build/dev/lib/phoenix/ebin/" />
     <ignored path="$PROJECT_DIR$/assets/_build/test/lib/phoenix/ebin/" />
@@ -25,31 +24,21 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="general_channel.ex" pinned="false" current-in-tab="true">
+      <file leaf-file-name="general_channel.ex" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/lib/stuff_swap_web/channels/general_channel.ex">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="195">
+            <state relative-caret-position="298">
               <caret line="26" column="39" lean-forward="false" selection-start-line="26" selection-start-column="39" selection-end-line="26" selection-end-column="39" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="experiment_channel.ex" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/lib/stuff_swap_web/channels/experiment_channel.ex">
+      <file leaf-file-name="index.html.eex" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/lib/stuff_swap_web/templates/page/index.html.eex">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="374">
-              <caret line="22" column="5" lean-forward="false" selection-start-line="22" selection-start-column="5" selection-end-line="22" selection-end-column="5" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="subcategory.ex" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/lib/stuff_swap/subtypes/subcategory.ex">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="153">
-              <caret line="9" column="22" lean-forward="false" selection-start-line="9" selection-start-column="11" selection-end-line="9" selection-end-column="22" />
+            <state relative-caret-position="17">
+              <caret line="1" column="54" lean-forward="false" selection-start-line="1" selection-start-column="54" selection-end-line="1" selection-end-column="54" />
               <folding />
             </state>
           </provider>
@@ -107,6 +96,7 @@
         <option value="$PROJECT_DIR$/.gitignore" />
         <option value="$PROJECT_DIR$/priv/repo/seeds.exs" />
         <option value="$PROJECT_DIR$/lib/stuff_swap_web/channels/general_channel.ex" />
+        <option value="$PROJECT_DIR$/lib/stuff_swap_web/templates/page/index.html.eex" />
       </list>
     </option>
   </component>
@@ -132,9 +122,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scratches" />
-      <pane id="Scope" />
-      <pane id="AndroidView" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -169,27 +156,6 @@
               <item name="stuff_swap" type="b2602c69:ProjectViewProjectNode" />
               <item name="stuff_swap" type="462c0819:PsiDirectoryNode" />
               <item name="lib" type="462c0819:PsiDirectoryNode" />
-              <item name="stuff_swap" type="462c0819:PsiDirectoryNode" />
-              <item name="store" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="stuff_swap" type="b2602c69:ProjectViewProjectNode" />
-              <item name="stuff_swap" type="462c0819:PsiDirectoryNode" />
-              <item name="lib" type="462c0819:PsiDirectoryNode" />
-              <item name="stuff_swap" type="462c0819:PsiDirectoryNode" />
-              <item name="subtypes" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="stuff_swap" type="b2602c69:ProjectViewProjectNode" />
-              <item name="stuff_swap" type="462c0819:PsiDirectoryNode" />
-              <item name="lib" type="462c0819:PsiDirectoryNode" />
-              <item name="stuff_swap" type="462c0819:PsiDirectoryNode" />
-              <item name="types" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="stuff_swap" type="b2602c69:ProjectViewProjectNode" />
-              <item name="stuff_swap" type="462c0819:PsiDirectoryNode" />
-              <item name="lib" type="462c0819:PsiDirectoryNode" />
               <item name="stuff_swap_web" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
@@ -197,7 +163,15 @@
               <item name="stuff_swap" type="462c0819:PsiDirectoryNode" />
               <item name="lib" type="462c0819:PsiDirectoryNode" />
               <item name="stuff_swap_web" type="462c0819:PsiDirectoryNode" />
-              <item name="channels" type="462c0819:PsiDirectoryNode" />
+              <item name="templates" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="stuff_swap" type="b2602c69:ProjectViewProjectNode" />
+              <item name="stuff_swap" type="462c0819:PsiDirectoryNode" />
+              <item name="lib" type="462c0819:PsiDirectoryNode" />
+              <item name="stuff_swap_web" type="462c0819:PsiDirectoryNode" />
+              <item name="templates" type="462c0819:PsiDirectoryNode" />
+              <item name="page" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="stuff_swap" type="b2602c69:ProjectViewProjectNode" />
@@ -215,6 +189,9 @@
         </subPane>
       </pane>
       <pane id="PackagesPane" />
+      <pane id="Scratches" />
+      <pane id="Scope" />
+      <pane id="AndroidView" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -376,14 +353,6 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/lib/stuff_swap_web/channels/general_channel.ex">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="442">
-          <caret line="26" column="23" lean-forward="true" selection-start-line="26" selection-start-column="23" selection-end-line="26" selection-end-column="23" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/lib/stuff_swap_web/channels/user_socket.ex">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="85">
@@ -693,14 +662,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/lib/stuff_swap/subtypes/subcategory.ex">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="153">
-          <caret line="9" column="22" lean-forward="false" selection-start-line="9" selection-start-column="11" selection-end-line="9" selection-end-column="22" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/lib/stuff_swap/account/user.ex">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="374">
@@ -713,7 +674,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="323">
           <caret line="19" column="162" lean-forward="false" selection-start-line="19" selection-start-column="162" selection-end-line="19" selection-end-column="162" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -729,14 +689,28 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="374">
           <caret line="22" column="5" lean-forward="false" selection-start-line="22" selection-start-column="5" selection-end-line="22" selection-end-column="5" />
-          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lib/stuff_swap/subtypes/subcategory.ex">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="153">
+          <caret line="9" column="22" lean-forward="false" selection-start-line="9" selection-start-column="11" selection-end-line="9" selection-end-column="22" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/lib/stuff_swap_web/channels/general_channel.ex">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="195">
+        <state relative-caret-position="298">
           <caret line="26" column="39" lean-forward="false" selection-start-line="26" selection-start-column="39" selection-end-line="26" selection-end-column="39" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lib/stuff_swap_web/templates/page/index.html.eex">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="17">
+          <caret line="1" column="54" lean-forward="false" selection-start-line="1" selection-start-column="54" selection-end-line="1" selection-end-column="54" />
           <folding />
         </state>
       </provider>
