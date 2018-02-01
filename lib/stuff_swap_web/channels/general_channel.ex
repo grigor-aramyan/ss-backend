@@ -13,6 +13,76 @@ defmodule StuffSwapWeb.GeneralChannel do
     {:ok, socket}
   end
 
+  def handle_in("chat_message:fetch_all_for_item", params, socket) do
+    addressed_to_id = params["addressed_to_id"]
+    author_id = params["author_id"]
+    item_id = params["item_id"]
+
+    case Integer.parse addressed_to_id do
+      {addressed_to_id, ""} ->
+        case Integer.parse author_id do
+          {author_id, ""} ->
+            case Integer.parse item_id do
+              {item_id, ""} ->
+                query = from m in "messages",
+                             where: m.item_id == ^item_id and (m.author_id == ^author_id and m.addressedto_id == ^addressed_to_id) or
+                                    (m.author_id == ^addressed_to_id and m.addressedto_id == ^author_id),
+                             select: [m.id, m.author_id, m.body, m.is_red, m.inserted_at]
+
+                raw_output = Repo.all(query)
+
+                output = get_messages_from_list(raw_output)
+
+                IO.inspect output
+
+                push socket, "chat_message:fetch_all_for_item", %{
+                  output: output
+                }
+
+                {:reply, :ok, socket}
+              :error ->
+                push socket, "chat_message:fetch_all_for_item", %{
+                  msg: "Invalid input data"
+                }
+                {:reply, :error, socket}
+            end
+          :error ->
+            push socket, "chat_message:fetch_all_for_item", %{
+              msg: "Invalid input data"
+            }
+            {:reply, :error, socket}
+        end
+      :error ->
+        push socket, "chat_message:fetch_all_for_item", %{
+          msg: "Invalid input data"
+        }
+        {:reply, :error, socket}
+    end
+  end
+
+  def handle_in("store_item:fetch", params, socket) do
+    item_id = params["item_id"]
+
+    item = Repo.get(Item, item_id)
+    user_id = item.user_id
+    user = Repo.get(User, user_id)
+
+    IO.inspect user
+    IO.inspect item
+
+    push socket, "store_item:fetch", %{
+      id: item.id,
+      user_id: item.user_id,
+      title: item.title,
+      desc: item.description,
+      item_pic: item.picture_uri,
+      profile_avatar: user.profile_image_uri,
+      author_name: user.name
+    }
+
+    {:reply, :ok, socket}
+  end
+
   def handle_in("store_item:new", params, socket) do
     title = params["title"]
     desc = params["desc"]
@@ -145,6 +215,14 @@ defmodule StuffSwapWeb.GeneralChannel do
         }
         {:reply, :error, socket}
     end
+  end
+
+  defp get_messages_from_list([]) do
+    []
+  end
+  defp get_messages_from_list([head | tail]) do
+    [ %{ message_id: Enum.at(head, 0), author_id: Enum.at(head, 1), body: Enum.at(head, 2),
+      is_red: Enum.at(head, 3) } ] ++ get_messages_from_list(tail)
   end
 
   defp get_data_from_cats_list([]) do
