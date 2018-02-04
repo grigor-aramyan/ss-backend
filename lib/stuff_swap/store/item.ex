@@ -1,8 +1,8 @@
 defmodule StuffSwap.Store.Item do
   use Ecto.Schema
   import Ecto.Changeset
+  alias StuffSwap.Chat.Message
   alias StuffSwap.Store.Item
-
 
   schema "items" do
     field :description, :string
@@ -12,6 +12,8 @@ defmodule StuffSwap.Store.Item do
     field :subcategory_id, :id
     field :user_id, :id
     field :is_free, :boolean
+
+    has_many :messages, Message
 
     timestamps()
   end

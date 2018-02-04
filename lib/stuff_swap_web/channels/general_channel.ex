@@ -8,10 +8,75 @@ defmodule StuffSwapWeb.GeneralChannel do
   alias StuffSwap.Account.User
   alias StuffSwap.Store.Item
   alias StuffSwap.Repo
+  alias StuffSwap.Chat.Message
 
   def join("stuffswap:general", _params, socket) do
     {:ok, socket}
   end
+
+  def handle_in("chat_messages:fetch_unreds_for_user", params, socket) do
+    user_id = params["current_user_id"]
+    query = from m in "messages",
+                 where: (m.addressedto_id == ^user_id) and (m.is_red == false),
+                 select: [m.id, m.author_id, m.body, m.is_red, m.insertion_date, m.item_id]
+
+    raw_output = Repo.all(query)
+    output = get_messages_from_list_2(raw_output)
+    IO.inspect output
+
+    push socket, "chat_messages:fetch_unreds_for_user", %{
+      output: output
+    }
+
+    {:reply, :ok, socket}
+
+  end
+
+  def handle_in("chat_message:new", params, socket) do
+    changeset = Message.changeset(%Message{}, params)
+
+    case Repo.insert(changeset) do
+      {:ok, message} ->
+        IO.inspect message
+        broadcast! socket, "chat_message:new", %{
+          output: %{
+            message_id: message.id,
+            message_author_id: message.author_id,
+            message_addressedto_id: message.addressedto_id,
+            message_is_red: message.is_red,
+            message_body: message.body,
+            message_insertion_date: message.insertion_date,
+            message_item_id: message.item_id
+          }
+        }
+
+        {:reply, :ok, socket}
+      {:error, _changeset} ->
+        push socket, "chat_message:new", %{
+          msg: "Couldn't add new message"
+        }
+
+        {:reply, :error, socket}
+    end
+  end
+
+  def handle_in("store_items:fetch_all", _params, socket) do
+    raw_output =
+      Repo.all(Item)
+      |> Repo.preload([:messages])
+
+    IO.inspect raw_output
+    output = get_item_from_list(raw_output)
+    IO.inspect output
+
+    push socket, "store_items:fetch_all", %{
+      output: output
+    }
+
+    {:reply, :ok, socket}
+  end
+
+
 
   def handle_in("chat_message:fetch_all_for_item", params, socket) do
     addressed_to_id = params["addressed_to_id"]
@@ -27,7 +92,7 @@ defmodule StuffSwapWeb.GeneralChannel do
                 query = from m in "messages",
                              where: m.item_id == ^item_id and (m.author_id == ^author_id and m.addressedto_id == ^addressed_to_id) or
                                     (m.author_id == ^addressed_to_id and m.addressedto_id == ^author_id),
-                             select: [m.id, m.author_id, m.body, m.is_red, m.inserted_at]
+                             select: [m.id, m.author_id, m.body, m.is_red, m.insertion_date]
 
                 raw_output = Repo.all(query)
 
@@ -217,12 +282,42 @@ defmodule StuffSwapWeb.GeneralChannel do
     end
   end
 
+  defp get_item_from_list([]) do
+    []
+  end
+  defp get_item_from_list([head | tail]) do
+    user = Repo.get(User, head.user_id)
+    [ %{ id: head.id,  item_author_id: head.user_id, title: head.title, desc: head.description,
+      item_pic: head.picture_uri, profile_avatar: user.profile_image_uri, item_is_free: head.is_free,
+      item_author_name: user.name, item_cat_id: head.category_id, item_subcat_id: head.subcategory_id,
+      messages: get_message_from_keyed_list(head.messages) } ]
+    ++ get_item_from_list(tail)
+  end
+  defp get_message_from_keyed_list([]) do
+    []
+  end
+  defp get_message_from_keyed_list([head | tail]) do
+    [ %{ message_id: head.id, message_author_id: head.author_id, message_body: head.body,
+      message_is_red: head.is_red, message_insertion_date: head.insertion_date,
+      message_addressedto_user_id: head.addressedto_id} ]
+    ++ get_message_from_keyed_list(tail)
+  end
+
+  defp get_messages_from_list_2([]) do
+    []
+  end
+  defp get_messages_from_list_2([head | tail]) do
+    [ %{ message_id: Enum.at(head, 0), author_id: Enum.at(head, 1), body: Enum.at(head, 2),
+      is_red: Enum.at(head, 3), insertion_date: Enum.at(head, 4), message_item_id: Enum.at(head, 5) } ]
+      ++ get_messages_from_list_2(tail)
+  end
+
   defp get_messages_from_list([]) do
     []
   end
   defp get_messages_from_list([head | tail]) do
     [ %{ message_id: Enum.at(head, 0), author_id: Enum.at(head, 1), body: Enum.at(head, 2),
-      is_red: Enum.at(head, 3) } ] ++ get_messages_from_list(tail)
+      is_red: Enum.at(head, 3), insertion_date: Enum.at(head, 4) } ] ++ get_messages_from_list(tail)
   end
 
   defp get_data_from_cats_list([]) do
