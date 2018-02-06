@@ -14,6 +14,32 @@ defmodule StuffSwapWeb.GeneralChannel do
     {:ok, socket}
   end
 
+  def handle_in("chat_messages:mark_as_red", params, socket) do
+    addressed_to = params["addressed_to_id"]
+    message_author_id = params["message_author_id"]
+    message_item_id = params["message_item_id"]
+    message_id = params["message_id"]
+
+    query = from m in "messages",
+                 where: (m.addressedto_id == ^addressed_to) and (m.author_id == ^message_author_id)
+                  and (m.item_id == ^message_item_id) and (m.is_red == false),
+                 select: [m.id, m.is_red]
+    raw_output = Repo.all(query)
+
+    case mark_message_as_red(raw_output) do
+      :ok ->
+        push socket, "chat_messages:mark_as_red", %{
+          output: message_id
+        }
+        {:reply, :ok, socket}
+      _ ->
+        push socket, "chat_messages:mark_as_red", %{
+          msg: "Something wrong heppened on server"
+        }
+        {:reply, :ok, socket}
+    end
+  end
+
   def handle_in("chat_messages:fetch_unreds_for_user", params, socket) do
     user_id = params["current_user_id"]
     query = from m in "messages",
@@ -291,6 +317,20 @@ defmodule StuffSwapWeb.GeneralChannel do
           msg: "not found"
         }
         {:reply, :error, socket}
+    end
+  end
+
+  defp mark_message_as_red([]) do
+    :ok
+  end
+  defp mark_message_as_red([head | tail]) do
+    message = Repo.get(Message, Enum.at(head, 0))
+    message = Ecto.Changeset.change(message, is_red: true)
+    case Repo.update(message) do
+      {:ok, _message} ->
+        mark_message_as_red(tail)
+      {:error, _} ->
+        mark_message_as_red(tail)
     end
   end
 
