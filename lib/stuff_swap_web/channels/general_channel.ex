@@ -21,11 +21,13 @@ defmodule StuffSwapWeb.GeneralChannel do
                  select: [m.id, m.author_id, m.body, m.is_red, m.insertion_date, m.item_id]
 
     raw_output = Repo.all(query)
-    output = get_messages_from_list_2(raw_output)
-    IO.inspect output
+
+    unique_messages_map = get_recent_messages_from_list(raw_output, %{})
+
+    output2 = get_recent_unred_message_by_id(Map.values(unique_messages_map), [])
 
     push socket, "chat_messages:fetch_unreds_for_user", %{
-      output: output
+      output: output2
     }
 
     {:reply, :ok, socket}
@@ -38,6 +40,10 @@ defmodule StuffSwapWeb.GeneralChannel do
     case Repo.insert(changeset) do
       {:ok, message} ->
         IO.inspect message
+        message_item = Repo.get(Item, message.item_id)
+        user = Repo.get(User, message.author_id)
+        message_item_author = Repo.get(User, message_item.user_id)
+
         broadcast! socket, "chat_message:new", %{
           output: %{
             message_id: message.id,
@@ -46,7 +52,13 @@ defmodule StuffSwapWeb.GeneralChannel do
             message_is_red: message.is_red,
             message_body: message.body,
             message_insertion_date: message.insertion_date,
-            message_item_id: message.item_id
+            message_item_id: message.item_id,
+            message_item_author_id: message_item.user_id,
+            message_item_title: message_item.title,
+            message_item_author_name: message_item_author.name,
+            message_item_author_pic: message_item_author.profile_image_uri,
+            message_author_name: user.name,
+            message_author_pic: user.profile_image_uri
           }
         }
 
@@ -297,7 +309,9 @@ defmodule StuffSwapWeb.GeneralChannel do
     []
   end
   defp get_message_from_keyed_list([head | tail]) do
-    [ %{ message_id: head.id, message_author_id: head.author_id, message_body: head.body,
+    author_id = head.author_id
+    author = Repo.get(User, author_id)
+    [ %{ message_id: head.id, message_author_id: author_id, message_author_name: author.name, message_body: head.body,
       message_is_red: head.is_red, message_insertion_date: head.insertion_date,
       message_addressedto_user_id: head.addressedto_id} ]
     ++ get_message_from_keyed_list(tail)
@@ -307,8 +321,16 @@ defmodule StuffSwapWeb.GeneralChannel do
     []
   end
   defp get_messages_from_list_2([head | tail]) do
-    [ %{ message_id: Enum.at(head, 0), author_id: Enum.at(head, 1), body: Enum.at(head, 2),
-      is_red: Enum.at(head, 3), insertion_date: Enum.at(head, 4), message_item_id: Enum.at(head, 5) } ]
+    author_id = Enum.at(head, 1)
+    author = Repo.get(User, author_id)
+    message_item_id = Enum.at(head, 5)
+    item = Repo.get(Item, message_item_id)
+    item_author = Repo.get(User, item.user_id)
+
+    [ %{ message_id: Enum.at(head, 0), author_id: author_id, author_name: author.name, body: Enum.at(head, 2),
+      is_red: Enum.at(head, 3), insertion_date: Enum.at(head, 4), message_item_id: message_item_id,
+      message_item_author_id: item.user_id, message_item_title: item.title, message_item_author_name: item_author.name,
+      message_item_author_pic: item_author.profile_image_uri, message_author_pic: author.profile_image_uri } ]
       ++ get_messages_from_list_2(tail)
   end
 
@@ -316,7 +338,9 @@ defmodule StuffSwapWeb.GeneralChannel do
     []
   end
   defp get_messages_from_list([head | tail]) do
-    [ %{ message_id: Enum.at(head, 0), author_id: Enum.at(head, 1), body: Enum.at(head, 2),
+    author_id = Enum.at(head, 1)
+    author = Repo.get(User, author_id)
+    [ %{ message_id: Enum.at(head, 0), author_id: author_id, author_name: author.name, body: Enum.at(head, 2),
       is_red: Enum.at(head, 3), insertion_date: Enum.at(head, 4) } ] ++ get_messages_from_list(tail)
   end
 
@@ -335,5 +359,37 @@ defmodule StuffSwapWeb.GeneralChannel do
 
   defp get_data_from_subcats_list([head | tail]) do
     [ %{ id: head.id, title: head.title, pic_uri: head.pic_uri, cat_id: head.category_id } ] ++ get_data_from_subcats_list(tail)
+  end
+
+  defp get_recent_unred_message_by_id([], outputs) do
+    get_messages_from_list_2(outputs)
+  end
+  defp get_recent_unred_message_by_id([head | tail ], outputs) do
+    query = from m in "messages",
+                 where: m.id == ^head,
+                 select: [m.id, m.author_id, m.body, m.is_red, m.insertion_date, m.item_id]
+
+    output = Repo.all(query)
+    outputs = outputs ++ output
+
+    get_recent_unred_message_by_id(tail, outputs)
+  end
+
+  defp get_recent_messages_from_list([], map) do
+    map
+  end
+  defp get_recent_messages_from_list([head | tail], map) do
+    map =
+      case Map.has_key?(map, "#{Enum.at(head, 1)}-#{Enum.at(head, 5)}") do
+        true ->
+          if map["#{Enum.at(head, 1)}-#{Enum.at(head, 5)}"] < Enum.at(head, 0) do
+            Map.put(map, "#{Enum.at(head, 1)}-#{Enum.at(head, 5)}", Enum.at(head, 0))
+          else
+            map
+          end
+        false ->
+          Map.put(map, "#{Enum.at(head, 1)}-#{Enum.at(head, 5)}", Enum.at(head, 0))
+      end
+    get_recent_messages_from_list(tail, map)
   end
 end
