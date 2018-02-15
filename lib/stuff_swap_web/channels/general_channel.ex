@@ -212,15 +212,16 @@ defmodule StuffSwapWeb.GeneralChannel do
     changeset = Item.changeset(%Item{}, new_item_params)
 
     case Repo.insert(changeset) do
-      {:ok, _item} ->
+      {:ok, item} ->
         query = from i in "items",
-                     where: i.subcategory_id == ^subcat_id,
+                     where: i.id == ^item.id,
                      select: [i.id, i.title, i.description, i.picture_uri, i.is_free, i.user_id, i.subcategory_id, i.category_id]
 
         raw_output = Repo.all(query)
+        extended_output = extend_output_data(raw_output)
 
         broadcast! socket, "store_item:new", %{
-          output: raw_output
+          output: extended_output
         }
 
         {:reply, :ok, socket}
@@ -318,6 +319,17 @@ defmodule StuffSwapWeb.GeneralChannel do
         }
         {:reply, :error, socket}
     end
+  end
+
+  defp extend_output_data([]) do
+    []
+  end
+  defp extend_output_data([ head | tail ]) do
+    item_author_id = Enum.at(head, 5)
+    item_author = Repo.get(User, item_author_id)
+
+    [ head ++ [ item_author.name, item_author.profile_image_uri, "" ] ]
+    ++ extend_output_data(tail)
   end
 
   defp mark_message_as_red([]) do
